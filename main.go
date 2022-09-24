@@ -12,12 +12,17 @@ func init() {
 	initializers.ConnectToDB()
 }
 
+/* to be change
+*	model structure : remove Bdate, add picture & password
+*
+ */
+
 func main() {
 	r := gin.Default() //router
 	r.POST("/user", controllers.UserCreate)
 	r.GET("/users", controllers.GetUsers)
 	r.GET("/user/:sid", controllers.GetUserById)
 	r.PUT("/user/:sid", controllers.UserUpdate)
-	// r.DELETE()
+	r.DELETE("/user/:sid", controllers.UserDelete)
 	r.Run()
 }

@@ -116,10 +116,13 @@ func UserUpdate(c *gin.Context) {
 	})
 }
 
-// func UserDelete(c *gin.Context) {
-// 	// Get SID
-// 	sid := c.Param("sid")
+func UserDelete(c *gin.Context) {
+	// Get SID
+	sid := c.Param("sid")
 
-// 	initializers.DB.Delete(&models.User{},)
+	initializers.DB.Where("student_id = ?", sid).Delete(&models.User{})
 
-// }
+	c.JSON(200, gin.H{
+		"message": "User has been deleted",
+	})
+}
