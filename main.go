@@ -33,9 +33,8 @@ func main() {
 	r.Run()
 
 	////new add
-	var loginService service.LoginService = service.StaticLoginService()
 	var jwtService service.JWTService = service.JWTAuthService()
-	var loginController controllers.LoginController = controllers.LoginHandler(loginService, jwtService)
+	var loginController controllers.LoginController = controllers.LoginHandler(jwtService)
 
 
 	r.POST("/login", func(ctx *gin.Context) {

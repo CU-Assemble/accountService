@@ -3,7 +3,8 @@ package controllers
 import (
 	"example/CUAccountService/dto"
 	"example/CUAccountService/service"
-
+	"example/CUAccountService/initializers"
+	"example/CUAccountService/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,22 +18,34 @@ type loginController struct {
 	jWtService   service.JWTService
 }
 
-func LoginHandler(loginService service.LoginService,
+func LoginHandler(
 	jWtService service.JWTService) LoginController {
 	return &loginController{
-		loginService: loginService,
 		jWtService:   jWtService,
 	}
 }
 
-func (controller *loginController) Login(ctx *gin.Context) string {
+
+func (controller *loginController) Login(c *gin.Context) string {
 	var credential dto.LoginCredentials
-	err := ctx.ShouldBind(&credential)
+	err := c.ShouldBind(&credential)
+	c.Bind(&credential)
 	if err != nil {
 		return "no data found"
 	}
-	isUserAuthenticated := controller.loginService.LoginUser(credential.StudentId, credential.Password)
-	if isUserAuthenticated {
+
+ 	var user models.User
+ 	initializers.DB.Where("student_id = ?", credential.StudentId).First(&user)
+	// if result.Error != nil {
+	// 	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "User with this student ID was not found."})
+	// 	return
+	// }
+	hash_pass, err := HashPassword(credential.Password)
+	var hpass = hash_pass
+
+
+// 	return result.studentId == body.studentId && result.password == hpass
+	if (user.StudentId == credential.StudentId && user.Password == hpass) {
 		return controller.jWtService.GenerateToken(credential.StudentId)
 
 	}
