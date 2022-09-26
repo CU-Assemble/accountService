@@ -4,7 +4,13 @@ import (
 	"example/CUAccountService/controllers"
 	"example/CUAccountService/initializers"
 
+
 	"github.com/gin-gonic/gin"
+
+	/////
+	"example/CUAccountService/middleware"
+	"example/CUAccountService/service"
+	"net/http"
 )
 
 func init() {
@@ -25,4 +31,30 @@ func main() {
 	r.PUT("/user/:sid", controllers.UserUpdate)
 	r.DELETE("/user/:sid", controllers.UserDelete)
 	r.Run()
+
+	////new add
+	var loginService service.LoginService = service.StaticLoginService()
+	var jwtService service.JWTService = service.JWTAuthService()
+	var loginController controllers.LoginController = controllers.LoginHandler(loginService, jwtService)
+
+
+	r.POST("/login", func(ctx *gin.Context) {
+		token := loginController.Login(ctx)
+		if token != "" {
+			ctx.JSON(http.StatusOK, gin.H{
+				"token": token,
+			})
+		} else {
+			ctx.JSON(http.StatusUnauthorized, nil)
+		}
+	})
+
+	v1 := r.Group("/v1")
+	v1.Use(middleware.AuthorizeJWT())
+	{
+		v1.GET("/test", func(ctx *gin.Context) {
+			ctx.JSON(http.StatusOK, gin.H{"message": "success"})
+		})
+	}
+	/////
 }
