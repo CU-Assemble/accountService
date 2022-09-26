@@ -1,5 +1,9 @@
 # accountService
 
+running server with command: CompileDaemon -command="./CUAccountService
+
+normal password before hash is either "helloWorld" or "HelloWorld"
+
 the available api currently are
 
 POST http://localhost:3000/user create an account

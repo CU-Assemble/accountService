@@ -7,7 +7,18 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 )
+
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	return string(bytes), err
+}
+
+func CheckPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
+}
 
 func UserCreate(c *gin.Context) {
 
@@ -15,10 +26,10 @@ func UserCreate(c *gin.Context) {
 		StudentId string
 		Name      string
 		Nickname  string
-		Birthdate time.Time
 		Faculty   string
 		Tel       string
 		Email     string
+		Password  string
 	}
 
 	c.Bind(&body)
@@ -27,11 +38,20 @@ func UserCreate(c *gin.Context) {
 		StudentId: body.StudentId,
 		Name:      body.Name,
 		Nickname:  body.Nickname,
-		Birthdate: body.Birthdate,
 		Faculty:   body.Faculty,
 		Tel:       body.Tel,
 		Email:     body.Email,
+		Password:  body.Password,
 	}
+
+	hash_pass, err := HashPassword(user.Password)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"message": "unhashable password",
+		})
+		return
+	}
+	user.Password = hash_pass
 	result := initializers.DB.Create(&user)
 
 	if result.Error != nil {
@@ -82,11 +102,22 @@ func UserUpdate(c *gin.Context) {
 		Faculty   string
 		Tel       string
 		Email     string
+		Password  string
 	}
 	c.Bind(&body)
 
 	//find the user
 	var user models.User
+	if len(body.Password) > 0 {
+		hash_pass, err := HashPassword(body.Password)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"message": "unhashable password",
+			})
+			return
+		}
+		body.Password = hash_pass
+	}
 	result := initializers.DB.Where("student_id = ?", sid).First(&user)
 
 	if result.Error != nil {
@@ -99,10 +130,10 @@ func UserUpdate(c *gin.Context) {
 		StudentId: body.StudentId,
 		Name:      body.Name,
 		Nickname:  body.Nickname,
-		Birthdate: body.Birthdate,
 		Faculty:   body.Faculty,
 		Tel:       body.Tel,
 		Email:     body.Email,
+		Password:  body.Password,
 	})
 
 	if updatedResult.Error != nil {
