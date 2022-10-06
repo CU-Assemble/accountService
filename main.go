@@ -4,7 +4,6 @@ import (
 	"example/CUAccountService/controllers"
 	"example/CUAccountService/initializers"
 
-
 	"github.com/gin-gonic/gin"
 
 	/////
@@ -30,12 +29,10 @@ func main() {
 	r.GET("/user/:sid", controllers.GetUserById)
 	r.PUT("/user/:sid", controllers.UserUpdate)
 	r.DELETE("/user/:sid", controllers.UserDelete)
-	r.Run()
 
 	////new add
 	var jwtService service.JWTService = service.JWTAuthService()
 	var loginController controllers.LoginController = controllers.LoginHandler(jwtService)
-
 
 	r.POST("/login", func(ctx *gin.Context) {
 		token := loginController.Login(ctx)
@@ -55,5 +52,6 @@ func main() {
 			ctx.JSON(http.StatusOK, gin.H{"message": "success"})
 		})
 	}
+	r.Run()
 	/////
 }

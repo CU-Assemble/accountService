@@ -1,9 +1,8 @@
-
 package middleware
 
 import (
-	"fmt"
 	"example/CUAccountService/service"
+	"fmt"
 	"net/http"
 
 	"github.com/dgrijalva/jwt-go"

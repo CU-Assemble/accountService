@@ -8,13 +8,13 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-//jwt service
+// jwt service
 type JWTService interface {
 	GenerateToken(studentId string) string
 	ValidateToken(token string) (*jwt.Token, error)
 }
 type authCustomClaims struct {
-	StudentId string 
+	StudentId string
 	jwt.StandardClaims
 }
 
@@ -23,7 +23,7 @@ type jwtServices struct {
 	issure    string
 }
 
-//auth-jwt
+// auth-jwt
 func JWTAuthService() JWTService {
 	return &jwtServices{
 		secretKey: getSecretKey(),
