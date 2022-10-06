@@ -52,6 +52,7 @@ func main() {
 			ctx.JSON(http.StatusOK, gin.H{"message": "success"})
 		})
 	}
-	r.Run()
 	/////
+	r.Run()
+
 }
