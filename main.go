@@ -55,7 +55,7 @@ func main() {
 	r.POST("/login", func(ctx *gin.Context) {
 		token := loginController.Login(ctx)
 		if token != "" {
-			ctx.JSON(http.StatusOK, gin.H{
+			ctx.JSON(200, gin.H{
 				"token": token,
 			})
 		} else {
@@ -67,7 +67,7 @@ func main() {
 	v1.Use(middleware.AuthorizeJWT())
 	{
 		v1.GET("/test", func(ctx *gin.Context) {
-			ctx.JSON(http.StatusOK, gin.H{"message": "success"})
+			ctx.JSON(200, gin.H{"message": "success"})
 		})
 	}
 	/////
