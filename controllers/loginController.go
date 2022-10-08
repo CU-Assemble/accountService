@@ -28,11 +28,11 @@ func LoginHandler(
 
 func (controller *loginController) Login(c *gin.Context) string {
 	var credential dto.LoginCredentials
-	err := c.ShouldBind(&credential)
+	//err := c.ShouldBind(&credential)
 	c.Bind(&credential)
-	if err != nil {
-		return "no data found"
-	}
+	// if err != nil {
+	// 	return "no data found"
+	// }
 
 	var user models.User
 	initializers.DB.Where("student_id = ?", credential.StudentId).First(&user)
