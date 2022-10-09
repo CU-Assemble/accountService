@@ -55,7 +55,9 @@ func UserCreate(c *gin.Context) {
 	result := initializers.DB.Create(&user)
 
 	if result.Error != nil {
-		c.Status(400)
+		c.JSON(400, gin.H{
+			"message": "something went wrong, this studentId might already registered",
+		})
 		return
 	}
 
