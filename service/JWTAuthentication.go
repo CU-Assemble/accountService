@@ -2,7 +2,6 @@ package service
 
 import (
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -32,11 +31,11 @@ func JWTAuthService() JWTService {
 }
 
 func getSecretKey() string {
-	secret := os.Getenv("SECRET")
-	if secret == "" {
-		secret = "secret"
-	}
-	return secret
+	// secret := os.Getenv("SECRET")
+	// if secret == "" {
+	// 	secret = "secret"
+	// }
+	return "IamGay"
 }
 
 func (service *jwtServices) GenerateToken(studentId string) string {
